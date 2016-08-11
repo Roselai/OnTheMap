@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController, MKMapViewDelegate, InformationPostingViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate{
     
     // MARK: PROPERTIES
     var udacityClient = UdacityClient.sharedInstance()
@@ -21,7 +21,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, InformationPosting
     
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+       getStudentLocations()
         self.mapView.delegate = self
 
         
@@ -29,6 +29,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, InformationPosting
         let button = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(logout))
         
         parentViewController!.navigationItem.leftBarButtonItem = button
+        
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(refresh))
+        parentViewController?.navigationItem.rightBarButtonItem = refreshButton
+        
+        
 
     }
     
@@ -37,26 +42,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, InformationPosting
         super.viewWillAppear(animated)
         
         
-        getStudentLocations()
     }
     
     
-    
-    
-    func addPin() {
-        for index in 0...(self.students.count - 1) {
-            let latitude = self.students[index].latitude
-            let longitude = self.students[index].longitude
-            let title = self.students[index].firstName + " " + self.students[index].lastName
-            let info = self.students[index].mediaURL
-            let coordinate = CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude) )
-            let annotation = Annotation.init(title: title, coordinate: coordinate, info: info)
-            self.annotationsArray?.append(annotation)
-            self.mapView.addAnnotation(annotation)
-            }
-
-    }
-
 
     // MARK: Logout
 
@@ -74,6 +62,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, InformationPosting
         }
     }
     
+    func refresh() {
+        getStudentLocations()
+        print("updated with student locations")
+        
+    }
+
+    
     func getStudentLocations() {
         ParseClient.sharedInstance().getStudentLocations { (student, errorString) in
             
@@ -85,13 +80,26 @@ class MapViewController: UIViewController, MKMapViewDelegate, InformationPosting
                 self.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
-                
-                self.students = student!
                 performUIUpdatesOnMain{
-                self.addPin()
-                }
-                }
+                self.students = student
+                for index in 0...(self.students.count - 1) {
+                    let latitude = self.students[index].latitude
+                    let longitude = self.students[index].longitude
+                    if self.students[index].firstName != nil  && self.students[index].lastName != nil{
+                    let title = self.students[index].firstName! + " " + self.students[index].lastName!
+                    let info = self.students[index].mediaURL
+                    let coordinate = CLLocationCoordinate2D(latitude: Double(latitude!), longitude: Double(longitude!) )
+                    let annotation = Annotation.init(title: title, coordinate: coordinate, info: info!)
+                    self.annotationsArray?.append(annotation)
+
                 
+                
+                self.mapView.addAnnotation(annotation)
+                }
+                }}
+                
+            
+            }
             
         
         
@@ -134,18 +142,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, InformationPosting
             
         
     }
-    
-    func myVCDidFinish(controller: InformationPostingView, coordinate: CLLocationCoordinate2D) {
-        
-        let region = MKCoordinateRegionMakeWithDistance(
-            coordinate, 2000, 2000)
-        
-        mapView.setRegion(region, animated: true)
-        
-        controller.navigationController?.popViewControllerAnimated(true)
-    }
-    
-    
 
 
 }

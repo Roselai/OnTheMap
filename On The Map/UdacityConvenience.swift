@@ -48,7 +48,7 @@ extension UdacityClient {
     
     // MARK: GET USER DATA
     
-    func getPublicUserData(userID: String, completionHandlerForGetPublicUserData: (result: AnyObject?, errorString: String?) -> Void) {
+    func getPublicUserData(userID: String, completionHandlerForGetPublicUserData: (result: AnyObject!, errorString: String?) -> Void) {
         
         let method = UdacityClient.Methods.getUserData
         let newMethod = self.subtituteKeyInMethod(method, key: UdacityClient.URLKeys.UserID, value: userID)
@@ -57,7 +57,9 @@ extension UdacityClient {
             if let error = error {
                 completionHandlerForGetPublicUserData(result: nil, errorString: error.localizedDescription)
             } else {
-                completionHandlerForGetPublicUserData(result: result, errorString: nil)
+                if let downloadedResult = result {
+                completionHandlerForGetPublicUserData(result: downloadedResult, errorString: nil)
+                }
             }
         }
     }
@@ -75,10 +77,10 @@ extension UdacityClient {
             if let error = error {
                 completionHandlerForGetName(firstName: nil, lastName: nil, errorString: error.localizedDescription)
             } else {
-                if let user = result![UdacityClient.JSONResponseKeys.User] as? [String: AnyObject] {
-                    if let firstName = user[UdacityClient.JSONResponseKeys.FirstName] as? String, lastName = user[UdacityClient.JSONResponseKeys.LastName] as? String{
+                if let user = result[UdacityClient.JSONResponseKeys.User] as? [String: AnyObject] {
+                    if let fName = user[UdacityClient.JSONResponseKeys.FirstName] as? String, lName = user[UdacityClient.JSONResponseKeys.LastName] as? String{
                         
-                        completionHandlerForGetName(firstName: firstName, lastName: lastName, errorString: nil)
+                        completionHandlerForGetName(firstName: fName, lastName: lName, errorString: nil)
                     }
                 }
             }

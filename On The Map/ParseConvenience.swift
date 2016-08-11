@@ -12,48 +12,56 @@ extension ParseClient {
     
     
     
-    func getStudentLocations(completionHandlerForGetStudentLocations: (student: [StudentInformation]?, errorString: String?) -> Void){
+    func getStudentLocations(completionHandlerForGetStudentLocations: (student: [StudentInformation]!, errorString: String?) -> Void){
         
         let parameters = [ParseClient.ParameterKeys.limit : ParseClient.ParameterValues.limit,
-        ParseClient.ParameterKeys.order: ParseClient.ParameterValues.order]
+                          ParseClient.ParameterKeys.order: ParseClient.ParameterValues.order]
         
         self.taskForGETMethod(parameters as? [String : AnyObject]) { (result, error) in
             if let error = error {
                 completionHandlerForGetStudentLocations(student: nil, errorString: error.localizedDescription)
             } else {
-                if let resultsArray = result!["results"] as? [[String: AnyObject]]   {
+                if let resultsArray = result["results"] as? [[String: AnyObject]]   {
                     
                     let student = StudentInformation.studentsFromResults(resultsArray)
                     completionHandlerForGetStudentLocations(student:  student, errorString: nil)
                     
                 } else {
-                    completionHandlerForGetStudentLocations(student:  nil, errorString: "Could not find student information) in \(result)")
+                    completionHandlerForGetStudentLocations(student:  nil, errorString: "Could not find student information in \(result)")
                     
                 }
             }
-
+            
         }
     }
     
     func postMyLocation(mapString: String, url: String, latitude: Double, longitude: Double, completionHandlerForPostMyLocation: (success: Bool, errorString: String?) -> Void) {
-        UdacityClient.sharedInstance().getNameFromUserID(UdacityClient.sharedInstance().userID) { (firstName, lastName, errorString) in
-            if let error = errorString {
-                print(error)
-            }
-            else {
-                let jsonBody = "{\"uniqueKey\": \"\(UdacityClient.sharedInstance().userID)\", \"firstName\": \"\(firstName!)\", \"lastName\": \"\(lastName!)\",\"mapString\": \"\(mapString)\", \"mediaURL\": \"\(url)\",\"latitude\": \(latitude), \"longitude\": \(longitude)}"
-                
-                self.taskForPOSTMethod(jsonBody, completionHandlerForPOST: { (result, error) in
-                    if let error = error {
-                        completionHandlerForPostMyLocation(success: false, errorString: error.localizedDescription)
+        
+        if let userId = UdacityClient.sharedInstance().userID {
+            UdacityClient.sharedInstance().getNameFromUserID(userId) { (firstName, lastName, errorString) in
+                if let error = errorString {
+                    print(error)
+                }
+                else {
+                    if let fName = firstName, lName = lastName {
+                    let jsonBody = "{\"uniqueKey\": \"\(userId)\", \"firstName\": \"\(fName)\", \"lastName\": \"\(lName)\",\"mapString\": \"\(mapString)\", \"mediaURL\": \"\(url)\",\"latitude\": \(latitude), \"longitude\": \(longitude)}"
                     
+                    self.taskForPOSTMethod(jsonBody, completionHandlerForPOST: { (result, error) in
+                        if let error = error {
+                            completionHandlerForPostMyLocation(success: false, errorString: error.localizedDescription)
+                            
+                        }
+                        else {
+                            completionHandlerForPostMyLocation(success: true, errorString: nil)
+                        }
+                    })
                     }
-                    else {
-                        completionHandlerForPostMyLocation(success: true, errorString: nil)
-                    }
-                })
+                    
+                    
+                    
+                }
+                
             }
-            
         }
     }
     

@@ -14,9 +14,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextfield: UITextField!
-    @IBOutlet weak var debugLabel: UILabel!
     
-    var keyboardHidden = true
     
     
     override func viewWillAppear(animated: Bool) {
@@ -32,7 +30,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        debugLabel.text = nil
         usernameTextField.delegate = self
         passwordTextfield.delegate = self
         
@@ -43,9 +40,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         
     }
-    override func viewWillDisappear(animated: Bool) {
-        // unsubscribeFromKeyboardNotifications()
-    }
+    
     
     
     @IBAction func login(sender: UIButton) {
@@ -54,7 +49,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         UdacityClient.sharedInstance().logInToUdacity(usernameTextField.text!, password: passwordTextfield.text!) { (success, errorString) in
             
-           performUIUpdatesOnMain{
+            performUIUpdatesOnMain{
                 if let error = errorString {
                     
                     let alert = UIAlertController(title: "Alert", message: error, preferredStyle: UIAlertControllerStyle.Alert)
@@ -84,14 +79,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: Textfield Delegate Methods
     func textFieldDidBeginEditing(textField: UITextField) {
-        
+        textField.textColor = UIColor.blackColor()
         textField.text = ""
         
         if textField .isEqual(passwordTextfield) {
             passwordTextfield.secureTextEntry =  true
         }
         
-        //subscribeToKeyboardNotifications()
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
@@ -111,46 +105,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    //MARK: KEYBOARD FUNCTIONS
-    func keyboardWillShow(notification: NSNotification) {
-        let keyboardOrigin = getKeyboardHeight(notification)
-        let textFieldOrigin = passwordTextfield.frame.origin.y + passwordTextfield.frame.height
-        
-        if textFieldOrigin  > -keyboardOrigin {
-            passwordTextfield.frame.origin.y = passwordTextfield.frame.origin.y - (textFieldOrigin - keyboardOrigin)
-            keyboardHidden = false
-        }
-        
-        
-    }
     
-    func keyboardWillHide(notification: NSNotification) {
-        
-        view.frame.origin.y = 0
-        keyboardHidden = true
-    }
-    
-    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
-        let userInfo = notification.userInfo
-        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
-        //return keyboardSize.CGRectValue().height
-        return keyboardSize.CGRectValue().origin.y
-    }
-    
-    //MARK: SUBSCRIPTIONS
-    func subscribeToKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillShow)    , name: UIKeyboardWillShowNotification, object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(keyboardWillHide)    , name: UIKeyboardWillHideNotification, object: nil)
-    }
-    
-    func unsubscribeFromKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name:
-            UIKeyboardWillShowNotification, object: nil)
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name:
-            UIKeyboardWillHideNotification, object: nil)
-    }
     
     // MARK: Private functions
     

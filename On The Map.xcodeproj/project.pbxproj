@@ -15,7 +15,7 @@
 		6A1E0AB01D36D42800D3D29B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6A1E0AAE1D36D42800D3D29B /* LaunchScreen.storyboard */; };
 		6A1E0AB81D36D8A400D3D29B /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A1E0AB71D36D8A400D3D29B /* MapKit.framework */; };
 		6A1E0ABA1D37B7B900D3D29B /* UdacityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1E0AB91D37B7B900D3D29B /* UdacityClient.swift */; };
-		6A7B27D31D5395C600262D21 /* InformationPostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7B27D21D5395C600262D21 /* InformationPostingView.swift */; };
+		6A234E7E1D58D00F00E0569E /* InfoPostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A234E7D1D58D00F00E0569E /* InfoPostingView.swift */; };
 		6AA12A631D54495F00AEDB4F /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA12A621D54495F00AEDB4F /* Annotation.swift */; };
 		6ABCF28F1D46C0CB00F91CC0 /* UdacityConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCF28E1D46C0CB00F91CC0 /* UdacityConstants.swift */; };
 		6ABCF2931D48138C00F91CC0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABCF2921D48138C00F91CC0 /* LoginViewController.swift */; };
@@ -38,7 +38,7 @@
 		6A1E0AB11D36D42800D3D29B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6A1E0AB71D36D8A400D3D29B /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		6A1E0AB91D37B7B900D3D29B /* UdacityClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityClient.swift; sourceTree = "<group>"; };
-		6A7B27D21D5395C600262D21 /* InformationPostingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationPostingView.swift; sourceTree = "<group>"; };
+		6A234E7D1D58D00F00E0569E /* InfoPostingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPostingView.swift; sourceTree = "<group>"; };
 		6AA12A621D54495F00AEDB4F /* Annotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
 		6ABCF28E1D46C0CB00F91CC0 /* UdacityConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityConstants.swift; sourceTree = "<group>"; };
 		6ABCF2921D48138C00F91CC0 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 				6A1E0AA71D36D42800D3D29B /* ListViewController.swift */,
 				6ABCF2921D48138C00F91CC0 /* LoginViewController.swift */,
 				6A1E0AA91D36D42800D3D29B /* Main.storyboard */,
-				6A7B27D21D5395C600262D21 /* InformationPostingView.swift */,
+				6A234E7D1D58D00F00E0569E /* InfoPostingView.swift */,
 				6ABCF29A1D49545A00F91CC0 /* StudentInformation.swift */,
 				6ABCF28A1D46772800F91CC0 /* Clients */,
 				6A1E0AAC1D36D42800D3D29B /* Assets.xcassets */,
@@ -201,6 +201,7 @@
 			files = (
 				6ABCF2931D48138C00F91CC0 /* LoginViewController.swift in Sources */,
 				6ABCF2A71D5246C000F91CC0 /* ParseConvenience.swift in Sources */,
+				6A234E7E1D58D00F00E0569E /* InfoPostingView.swift in Sources */,
 				6A1E0ABA1D37B7B900D3D29B /* UdacityClient.swift in Sources */,
 				6ABCF28F1D46C0CB00F91CC0 /* UdacityConstants.swift in Sources */,
 				6ABCF2A31D4FFAF600F91CC0 /* GCDBlackBox.swift in Sources */,
@@ -210,7 +211,6 @@
 				6ABCF2971D48E91400F91CC0 /* ParseClient.swift in Sources */,
 				6ABCF29B1D49545A00F91CC0 /* StudentInformation.swift in Sources */,
 				6ABCF2A51D50123A00F91CC0 /* UdacityConvenience.swift in Sources */,
-				6A7B27D31D5395C600262D21 /* InformationPostingView.swift in Sources */,
 				6AA12A631D54495F00AEDB4F /* Annotation.swift in Sources */,
 				6A1E0AA61D36D42800D3D29B /* MapViewController.swift in Sources */,
 			);

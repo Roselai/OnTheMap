@@ -71,7 +71,13 @@ class InformationPostingView: UIViewController, UITextFieldDelegate {
                                 self.delegate!.myVCDidFinish(self, coordinate: coordinate!)
                             }
                             performUIUpdatesOnMain{
-                            self.dismissViewControllerAnimated(true, completion: {print("Location Successfully Posted")})
+                            self.dismissViewControllerAnimated(true, completion: {
+                                print("Location Successfully Posted")
+//                                var view = self.storyboard?.instantiateViewControllerWithIdentifier("mapView")
+//                                
+//                                self.navigationController?.pushViewController(view!, animated: true)
+//                                view.UserId = employeesId[indexPath.row]
+                            })
                             }
                         }})
                     

@@ -14,8 +14,8 @@ import Foundation
 class UdacityClient : NSObject {
     
     // MARK: Properties
-    var userID: String!
-    var sessionID: String!
+    var userID: String? = nil
+    var sessionID: String? = nil
     
     // shared session
     var session = NSURLSession.sharedSession()
@@ -93,7 +93,7 @@ class UdacityClient : NSObject {
         return task
     }
     
-    func taskForGETMethod(method: String, completionHandlerForGET: (result: AnyObject?, error: NSError?) -> Void) -> NSURLSessionDataTask {
+    func taskForGETMethod(method: String, completionHandlerForGET: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask {
         
         /* 1. Set the parameters */
         
@@ -166,7 +166,7 @@ class UdacityClient : NSObject {
             func sendError(error: String) {
                 print(error)
                 let userInfo = [NSLocalizedDescriptionKey : error]
-                completionHandlerForDELETE(result: nil, error: NSError(domain: "taskForDELETEMethod", code: 1, userInfo: userInfo))
+                completionHandlerForDELETE(result: nil, error: NSError(domain: "taskForDELETEMethod", code: 1 , userInfo: userInfo))
             }
             
             /* GUARD: Was there an error? */
@@ -211,9 +211,9 @@ class UdacityClient : NSObject {
     }
     
     // given raw JSON, return a usable Foundation object
-    private func convertDataWithCompletionHandler(data: NSData, completionHandlerForConvertData: (result: AnyObject?, error: NSError?) -> Void) {
+    private func convertDataWithCompletionHandler(data: NSData, completionHandlerForConvertData: (result: AnyObject!, error: NSError?) -> Void) {
         
-        var parsedResult: AnyObject?
+        var parsedResult: AnyObject!
         do {
             let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
             parsedResult = try NSJSONSerialization.JSONObjectWithData(newData, options: .AllowFragments)
