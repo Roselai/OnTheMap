@@ -70,35 +70,38 @@ class infoPostingView: UIViewController, UITextViewDelegate {
         
         CLGeocoder().geocodeAddressString(locationString, completionHandler: {(placemarks, error) in
             
-            if let placemark = placemarks![0] as CLPlacemark? {
-                self.activityIndicator.stopAnimating()
-                self.locationFinderStack.hidden = true
-                self.LinkPostingStack.hidden = false
-                
-                
-                let location = placemark.location
-                let coordinate = location?.coordinate
-                self.latitude = coordinate!.latitude
-                self.longitude = coordinate!.longitude
-                let span = MKCoordinateSpanMake(0.1, 0.1)
-                let region = MKCoordinateRegion(center: coordinate!, span: span)
-                let annotation = MKPointAnnotation()
-                annotation.coordinate = coordinate!
-                
-                self.mapView.setRegion(region, animated: true)
-                self.mapView.addAnnotation(annotation)
+            if error != nil {
+                let errorMessage = "Location could not be found"
+                let alert = UIAlertController(title: nil, message: errorMessage, preferredStyle: .Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+                self.presentViewController(alert, animated: true, completion: {self.activityIndicator.stopAnimating()})
                 
                 
             } else {
-                if let error = error {
-                    let errorString = error.localizedDescription
-                    let alert = UIAlertController(title: nil, message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                    self.presentViewController(alert, animated: true, completion: nil)
-                }
-            }
-            
+                
+                if let placemark = placemarks![0] as CLPlacemark? {
+                    self.activityIndicator.stopAnimating()
+                    self.locationFinderStack.hidden = true
+                    self.LinkPostingStack.hidden = false
+                    
+                    
+                    let location = placemark.location
+                    let coordinate = location?.coordinate
+                    self.latitude = coordinate!.latitude
+                    self.longitude = coordinate!.longitude
+                    let span = MKCoordinateSpanMake(0.1, 0.1)
+                    let region = MKCoordinateRegion(center: coordinate!, span: span)
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = coordinate!
+                    
+                    self.mapView.setRegion(region, animated: true)
+                    self.mapView.addAnnotation(annotation)
+                    
+                    
+                }}
         })
+
+            
         
         
     }
@@ -106,11 +109,15 @@ class infoPostingView: UIViewController, UITextViewDelegate {
     @IBAction func submitButtonPressed(sender: UIButton) {
         ParseClient.sharedInstance().postMyLocation(self.locationTextView.text, url: self.linkTextView.text, latitude: self.latitude!, longitude: self.longitude!, completionHandlerForPostMyLocation: { (success, errorString) in
             
+           
             if let errorString = errorString {
+                performUIUpdatesOnMain{
                 let alert = UIAlertController(title: nil, message: errorString, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                self.presentViewController(alert, animated: true, completion: nil)
                 
+                
+                self.presentViewController(alert, animated: true, completion: nil)
+                }
                 
             }else {
                 performUIUpdatesOnMain{

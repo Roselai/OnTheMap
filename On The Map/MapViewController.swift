@@ -9,21 +9,22 @@
 import UIKit
 import MapKit
 
+
 class MapViewController: UIViewController, MKMapViewDelegate{
     
     // MARK: PROPERTIES
     var udacityClient = UdacityClient.sharedInstance()
-    var students: [StudentInformation] = [StudentInformation]()
-    var annotationsArray: [MKAnnotation]?
-
+    var studentStore = Student.sharedInstance()
+    
     // MARK: OUTLETS
     @IBOutlet weak var mapView: MKMapView!
     
     
     override func viewDidLoad() {
-       getStudentLocations()
+        super.viewDidLoad()
+        
         self.mapView.delegate = self
-
+        
         
         // create and set the logout button
         let button = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(logout))
@@ -33,32 +34,25 @@ class MapViewController: UIViewController, MKMapViewDelegate{
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(refresh))
         parentViewController?.navigationItem.rightBarButtonItem = refreshButton
         
-        
-
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        
-        super.viewWillAppear(animated)
-        
+        getStudentLocations()
         
     }
     
     
-
+    
     // MARK: Logout
-
+    
     func logout() {
         
-            udacityClient.logOutOfUdacity { (success, errorString) in
-                
+        udacityClient.logOutOfUdacity { (success, errorString) in
+            
             if let errorString = errorString {
                 print(errorString)
             } else {
                 performUIUpdatesOnMain{
                     self.dismissViewControllerAnimated(true, completion: {print("Successfully logged out")})
                 }
-        }
+            }
         }
     }
     
@@ -67,7 +61,7 @@ class MapViewController: UIViewController, MKMapViewDelegate{
         print("updated with student locations")
         
     }
-
+    
     
     func getStudentLocations() {
         ParseClient.sharedInstance().getStudentLocations { (student, errorString) in
@@ -77,37 +71,36 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                 let alert = UIAlertController(title: nil, message: error, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
                 performUIUpdatesOnMain{
-                self.presentViewController(alert, animated: true, completion: nil)
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
                 performUIUpdatesOnMain{
-                self.students = student
-                for index in 0...(self.students.count - 1) {
-                    let latitude = self.students[index].latitude
-                    let longitude = self.students[index].longitude
-                    if self.students[index].firstName != nil  && self.students[index].lastName != nil{
-                    let title = self.students[index].firstName! + " " + self.students[index].lastName!
-                    let info = self.students[index].mediaURL
-                    let coordinate = CLLocationCoordinate2D(latitude: Double(latitude!), longitude: Double(longitude!) )
-                    let annotation = Annotation.init(title: title, coordinate: coordinate, info: info!)
-                    self.annotationsArray?.append(annotation)
-
-                
-                
-                self.mapView.addAnnotation(annotation)
+                    self.studentStore.students = student
+                    for student in self.studentStore.students {
+                        
+                        
+                        let title = student.firstName! + " " + student.lastName!
+                        let subtitle = student.mediaURL
+                        
+                        
+                        let coordinate = CLLocationCoordinate2D(latitude: student.latitude!, longitude: student.longitude! )
+                        let annotation = Annotation.init(title: title, coordinate: coordinate, subtitle: subtitle!)
+                        
+                        self.mapView.addAnnotation(annotation)}
                 }
-                }}
-                
-            
             }
-            
-        
-        
-        }
-    }
+        }}
+    
+    
+    
+    
+    
+    
+    
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-
+        
+        
         let identifier = "Location"
         
         if annotation is Annotation {
@@ -117,7 +110,6 @@ class MapViewController: UIViewController, MKMapViewDelegate{
                 
                 annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 annotationView!.canShowCallout = true
-                
                 let button = UIButton(type: .DetailDisclosure)
                 annotationView!.rightCalloutAccessoryView = button
             } else {
@@ -128,21 +120,30 @@ class MapViewController: UIViewController, MKMapViewDelegate{
         }
         
         return nil
-    }
-
-
+        
+          }
+    
+    
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
-       let annotation = view.annotation as! Annotation
-            
-            if let url = NSURL(string: annotation.info) {
-                UIApplication.sharedApplication().openURL(url)
-            }
+        let annotation = view.annotation as! Annotation
+        var url: NSURL
         
-            
+        if let urlString = annotation.subtitle {
+            if urlString.hasPrefix("http") {
+                url = NSURL(string: urlString)!
+            } else {
+                url = NSURL(string: "https://" + urlString)!
+            }
+            UIApplication.sharedApplication().openURL(url)
+        }
+        
+        
+        
+        
         
     }
-
-
+    
+    
+    
 }
-

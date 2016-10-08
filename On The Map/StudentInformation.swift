@@ -15,8 +15,8 @@ struct StudentInformation {
     var lastName: String?
     var mapString: String?
     var mediaURL: String?
-    var latitude: Float?
-    var longitude: Float?
+    var latitude: Double?
+    var longitude: Double?
     
     init( dictionary: [String : AnyObject] ) {
         objectId = dictionary[ParseClient.JSONResponseKeys.objectId] as! String
@@ -25,20 +25,20 @@ struct StudentInformation {
         lastName = dictionary[ParseClient.JSONResponseKeys.lastName] as? String
         mapString = dictionary[ParseClient.JSONResponseKeys.mapString] as? String
         mediaURL = dictionary[ParseClient.JSONResponseKeys.mediaURL] as? String
-        latitude = dictionary[ParseClient.JSONResponseKeys.latitude] as? Float
-        longitude = dictionary[ParseClient.JSONResponseKeys.longitude] as? Float
+        latitude = dictionary[ParseClient.JSONResponseKeys.latitude] as? Double
+        longitude = dictionary[ParseClient.JSONResponseKeys.longitude] as? Double
     }
     
     
-    static func studentsFromResults(results: [[String : AnyObject]]) -> [StudentInformation] {
-        var students = [StudentInformation]()
-        
-        // iterate through array of dictionaries, each Movie is a dictionary
-        for result in results {
-            students.append(StudentInformation(dictionary: result))
-        }
-        
-        return students
-    }
+//    static func studentsFromResults(results: [[String : AnyObject]]) -> [StudentInformation] {
+//        var students = [StudentInformation]()
+//        
+//        // iterate through array of dictionaries, each Movie is a dictionary
+//        for result in results {
+//            students.append(StudentInformation(dictionary: result))
+//        }
+//        
+//        return students
+//    }
     
 }

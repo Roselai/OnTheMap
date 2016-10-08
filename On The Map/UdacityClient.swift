@@ -44,15 +44,15 @@ class UdacityClient : NSObject {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             func sendError(error: String) {
-                print(error)
                 let userInfo = [NSLocalizedDescriptionKey : error]
                 completionHandlerForPOST(result: nil, error: NSError(domain: "taskForPOSTMethod", code: 1, userInfo: userInfo))
                 
             }
             
             /* GUARD: Was there an error? */
+            let errorString = error?.localizedDescription
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
+                sendError("There was an error with your request: \(errorString!)")
                 return
             }
             
@@ -105,14 +105,14 @@ class UdacityClient : NSObject {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             func sendError(error: String) {
-                print(error)
                 let userInfo = [NSLocalizedDescriptionKey : error]
                 completionHandlerForGET(result: nil, error: NSError(domain: "taskForGETMethod", code: 1, userInfo: userInfo))
             }
             
             /* GUARD: Was there an error? */
+            let errorString = error?.localizedDescription
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
+                sendError("There was an error with your request: \(errorString!)")
                 return
             }
             
@@ -164,14 +164,14 @@ class UdacityClient : NSObject {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             func sendError(error: String) {
-                print(error)
                 let userInfo = [NSLocalizedDescriptionKey : error]
                 completionHandlerForDELETE(result: nil, error: NSError(domain: "taskForDELETEMethod", code: 1 , userInfo: userInfo))
             }
             
             /* GUARD: Was there an error? */
+            let errorString = error?.localizedDescription
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
+                sendError("There was an error with your request: \(errorString!)")
                 return
             }
             

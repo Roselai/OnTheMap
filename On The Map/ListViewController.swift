@@ -13,15 +13,14 @@ class ListViewController: UITableViewController{
     
     //MARK: PROPERTIES
     let udacityClient = UdacityClient.sharedInstance()
-    var students: [StudentInformation] = [StudentInformation]()
-    
+    var studentStore = Student.sharedInstance()
     
     //MARK: VIEWS
     
     override func viewWillAppear(animated: Bool) {
         
         super.viewWillAppear(animated)
-        getStudentInfo()
+       // getStudentInfo()
         
     }
     
@@ -33,24 +32,21 @@ class ListViewController: UITableViewController{
         let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseIdentifier) as UITableViewCell!
         cell.imageView?.image = UIImage(named: "pin")
         cell.imageView!.contentMode = UIViewContentMode.ScaleAspectFit
-        if self.students[indexPath.row].firstName != nil  && self.students[indexPath.row].lastName != nil {
-        cell.textLabel?.text  = students[indexPath.row].firstName! + " " + students[indexPath.row].lastName!
-        } else {
-        cell.textLabel?.text = ""
-        }
-        cell.detailTextLabel?.text = students[indexPath.row].mediaURL
+       
+        cell.textLabel?.text  = studentStore.students[indexPath.row].firstName! + " " + studentStore.students[indexPath.row].lastName!
+        cell.detailTextLabel?.text = studentStore.students[indexPath.row].mediaURL
         
         return cell
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return students.count
+        return studentStore.students.count
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let urlString = students[indexPath.row].mediaURL
+        let urlString = studentStore.students[indexPath.row].mediaURL
         if let url = NSURL(string: urlString!) {
             UIApplication.sharedApplication().openURL(url)
         }
@@ -63,17 +59,19 @@ class ListViewController: UITableViewController{
         ParseClient.sharedInstance().getStudentLocations { (student, errorString) in
             
             if let error = errorString {
-                
+                performUIUpdatesOnMain{
                 let alert = UIAlertController(title: nil, message: error, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                performUIUpdatesOnMain{
+                
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
                 
             } else {
                 
-                self.students = student!
+                self.studentStore.students = student
+                
                 performUIUpdatesOnMain{
+                    
                     self.tableView.reloadData()
                 }
                 
