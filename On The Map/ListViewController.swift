@@ -15,15 +15,31 @@ class ListViewController: UITableViewController{
     let udacityClient = UdacityClient.sharedInstance()
     var studentStore = Student.sharedInstance()
     
-    //MARK: VIEWS
-    
-    override func viewWillAppear(animated: Bool) {
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        super.viewWillAppear(animated)
-       // getStudentInfo()
+        tableView.delegate = self
+        
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(refresh))
+        parentViewController?.navigationItem.rightBarButtonItem = refreshButton
+        
+        
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        getStudentLocations()
+    }
+
+    
+    func refresh() {
+        self.studentStore.students.removeAll()
+        getStudentLocations()
+        print("updated with student locations")
+        
+    }
     
     //MARK: TABLEVIEW DELEGATE FUNCTIONS
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -46,17 +62,23 @@ class ListViewController: UITableViewController{
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        let urlString = studentStore.students[indexPath.row].mediaURL
-        if let url = NSURL(string: urlString!) {
+        var url: NSURL
+        
+        if let urlString = studentStore.students[indexPath.row].mediaURL {
+            if urlString.hasPrefix("http") {
+                url = NSURL(string: urlString)!
+            } else {
+                url = NSURL(string: "https://" + urlString)!
+            }
             UIApplication.sharedApplication().openURL(url)
         }
+
+        
     }
     
-
-    
-    
-    func getStudentInfo () {
+    func getStudentLocations() {
         ParseClient.sharedInstance().getStudentLocations { (student, errorString) in
+            
             
             if let error = errorString {
                 performUIUpdatesOnMain{
@@ -65,22 +87,16 @@ class ListViewController: UITableViewController{
                 
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
-                
             } else {
-                
-                self.studentStore.students = student
-                
                 performUIUpdatesOnMain{
-                    
+                    for item in student {
+                        self.studentStore.students.append(item)
+                    }
                     self.tableView.reloadData()
                 }
-                
             }
-            
-            
-        }
-        
-        
-    }
+        }}
+
+    
 }
 

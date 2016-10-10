@@ -57,6 +57,9 @@ class MapViewController: UIViewController, MKMapViewDelegate{
     }
     
     func refresh() {
+        let annotations = mapView.annotations
+        mapView.removeAnnotations(annotations)
+        self.studentStore.students.removeAll()
         getStudentLocations()
         print("updated with student locations")
         
@@ -68,9 +71,10 @@ class MapViewController: UIViewController, MKMapViewDelegate{
             
             
             if let error = errorString {
+                performUIUpdatesOnMain{
                 let alert = UIAlertController(title: nil, message: error, preferredStyle: UIAlertControllerStyle.Alert)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
-                performUIUpdatesOnMain{
+                
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
