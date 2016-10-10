@@ -56,6 +56,8 @@ class MapViewController: UIViewController, MKMapViewDelegate{
         }
     }
     
+     // MARK: Refresh
+    
     func refresh() {
         let annotations = mapView.annotations
         mapView.removeAnnotations(annotations)
